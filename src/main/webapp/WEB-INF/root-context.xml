@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+-->
+    <!--webApplication이라서 xml에서 bean을 등록-->
+    <!--
+    <bean class="net.ict.springex.Sample.SampleDAO"></bean>
+    <bean class="net.ict.springex.Sample.SampleService"></bean>
+    -->
+    <!--
+    패키지를 지정해서 해당 패키지내 클래스의 인스턴스들을 스프링의 빈으로 등록하기
+    위해서 사용
+     특정 어노테이션을 이용해서 스프링의 빈으로 관리될 객체를 표시
+    -->
+
+<!--클래스가 태그형태로 바뀜-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+
+<context:component-scan base-package="net.ict.springex.config"/>
+<context:component-scan base-package="net.ict.springex.service"/>
+
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="driverClassName" value="org.mariadb.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mariadb://localhost:3305/webdb"/>
+        <property name="username" value="webuser"/>
+        <property name="password" value="webuser"/>
+        <property name="dataSourceProperties">
+            <props>
+                <prop key="cachePrepStmts">true</prop>
+                <prop key="prepStmtCacheSize">250</prop>
+                <prop key="prepStmtCacheSqlLimit">2048</prop>
+            </props>
+        </property>
+    </bean>
+
+<!--dataSource가 connectionpool-->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig"/><!--생성자를 만들어서 하이카리 컨피그를 받아서 injection하겟다 .-->
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/><!-- 생성자에 dataSource를 주입 -->
+        <property name="mapperLocations" value="classpath:/mappers/**/*.xml"/><!--ㅡ인식되는 경로(classpath=resource)모든 xml파일 빈등록해라 -->
+    </bean>
+
+
+
+    <mybatis:scan base-package="net.ict.springex.mapper"></mybatis:scan>
+
+
+</beans>

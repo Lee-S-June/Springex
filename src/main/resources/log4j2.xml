@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--log 출력시 콘솔창에 어떻게 띄울것인지 형태를 지정한다-->
+<Configuration status="INFO">
+    <Appenders>
+        <!--콘솔-->
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout charset="UTF-8" pattern="%d{hh:mm:ss} %5p [%c] %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <logger name="org.springframework" level="INFO" additivity="false">
+            <appender-ref ref="console"/>
+        </logger>
+
+        <logger name="net.ict" level="INFO" additivity="false">
+            <appender-ref ref="console"/>
+        </logger>
+
+        <logger name="net.ict.springex.mapper" level="TRACE" additivity="false">
+            <appender-ref ref="console" />
+        </logger>
+
+        <root level="info" additivity="false">
+            <AppenderRef ref="console"/>
+        </root>
+    </Loggers>
+</Configuration>
+
